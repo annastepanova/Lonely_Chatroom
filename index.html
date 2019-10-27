@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>The Loneliest Chatroom</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div id="main">
+      <div id="heading">
+        <h1>The Loneliest Chatroom</h1>
+        <h3>No Friends? No Problem!</h3>
+      </div>
+      <div id="chatbox">
+        <div class="message" id="2">
+          <span class="time">10:22</span>
+          <span class="sender">Myself:</span>
+          <span>Is it me you're looking for?</span>
+          <span class="delete">❌</span>
+        </div>
+        <div class="message" id="1">
+          <span class="time">10:21</span>
+          <span class="sender">Me:</span>
+          <span>Hello?</span>
+          <span class="delete">❌</span>
+        </div>
+      </div>
+      <form><input type="text"/></form>
+      <button>I'm feeling Lonely!</button>
+    </div>
+    <script>
+      
+      function getRandomName(){
+      const myNames = ["Me", "Myself", "I"]
+      return myNames[Math.floor(Math.random()*myNames.length)]
+      }
+
+      let date = new Date();
+      let hours = date.getHours()
+      let minutes = date.getMinutes()
+      let currentTime = hours + ':' + minutes
+      let index = 2
+         
+      function handleFormSubmit(event){
+        event.preventDefault()
+        if (input.value.trim().length) {
+          index++
+          const userMessage = `
+          <div class="message" id="${index}">
+            <span class="time">${currentTime}</span>
+            <span class="sender">${getRandomName()}:</span>
+            <span>${input.value}</span>
+            <span class="delete" onclick="deleteMessage(${index})">❌</span>
+            </div>`
+            chatbox.innerHTML = userMessage + chatbox.innerHTML
+            input.value = ''
+        }
+        form.reset()
+        }
+
+      function deleteMessage(id){
+      if (confirm("Are you sure you want to delete me?")){
+        let message = document.getElementById(id);
+        message.remove()
+      }
+      }
+
+      function norrisJoke(data){
+      const joke = data.value.joke
+        index++
+      const userMessage = `
+      <div class="message" id="${index}">
+        <span class="time">${currentTime}</span>
+        <span class="fact">Fact:</span>
+        <span>${joke}</span>
+        <span class="delete" onclick="deleteMessage(${index})">❌</span>
+        </div>`
+        chatbox.innerHTML = userMessage + chatbox.innerHTML
+      }
+
+      function getRandomJoke(){
+      fetch('https://api.icndb.com/jokes/random')
+      .then(response => response.json().then(norrisJoke))
+      .catch(error => "Chuck Norris makes no errors, but this webpage did.")
+      }
+    
+      const form = document.querySelector('form')
+      const input = document.querySelector('input')
+      const delButton = document.querySelector('.delete')
+      const button = document.querySelector('button')
+
+      form.addEventListener('submit', handleFormSubmit)
+      delButton.addEventListener('click', deleteMessage)
+      button.addEventListener('click', getRandomJoke)
+
+    </script>
+  </body>
+</html>
